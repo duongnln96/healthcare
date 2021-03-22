@@ -1,0 +1,8 @@
+kafka_management:
+  bootstrap_servers: "192.168.1.5:9092"
+  partitions: 1
+  timeout: 10000
+  topic: "heart-disease-raw"
+
+data_path: "./data/heart_modified.csv"
+sampling_rate: 2
