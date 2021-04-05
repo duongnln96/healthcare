@@ -1,0 +1,8 @@
+kafka_management:
+  bootstrap_servers: "192.168.1.4:9092"
+  partitions: 1
+  timeout: 10000
+  topic_result: "heart-disease-predict-result"
+  topic_raw: "heart-disease-raw"
+
+model_path: "./model/model.h5"
