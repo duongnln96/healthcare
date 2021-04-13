@@ -13,58 +13,70 @@
 			<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
   </properties>
  
- <dependencies>
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>${kafka.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
     <dependency>
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-streams</artifactId>
         <version>${kafka.version}</version>
     </dependency>
+    
     <dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-log4j12</artifactId>
-    	<version>${slf4j.version}</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
-	<dependency>
-	    <groupId>org.apache.kafka</groupId>
-	    <artifactId>kafka-clients</artifactId>
-	    <version>${kafka.version}</version>
-	</dependency>
- </dependencies>
 
- <build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>${maven-compiler-plugin.version}</version>
-			<configuration>
-				<source>${java.version}</source>
-				<target>${java.version}</target>
-			</configuration>
-		</plugin>
+    <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.28</version>
+    </dependency>
 
-		<!-- <plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>exec-maven-plugin</artifactId>
-			<version>1.6.0</version>
+  </dependencies>
 
-			<executions>
-				<execution>
-					<id>lab200</id>
-					<configuration>
-						<executable>java</executable>
-						<arguments>
-						 <argument>-classpath</argument>
-						 <classpath />
-						 <argument>net.jgp.books.spark.ch12.lab200_record_transformation.RecordTransformationApp</argument>
-						</arguments>
-					</configuration>
-				</execution>
-			</executions>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
 
-		</plugin> -->
-	</plugins>
+      <!-- <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
 
- </build>
+        <executions>
+          <execution>
+            <id>lab200</id>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>net.jgp.books.spark.ch12.lab200_record_transformation.RecordTransformationApp</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+
+      </plugin> -->
+    </plugins>
+
+  </build>
 
 </project>
