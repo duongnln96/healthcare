@@ -55,26 +55,26 @@
         </configuration>
       </plugin>
 
-      <!-- <plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
 
         <executions>
           <execution>
-            <id>lab200</id>
+            <id>main</id>
             <configuration>
               <executable>java</executable>
               <arguments>
                 <argument>-classpath</argument>
                 <classpath />
-                <argument>net.jgp.books.spark.ch12.lab200_record_transformation.RecordTransformationApp</argument>
+                <argument>HeartDisease</argument>
               </arguments>
             </configuration>
           </execution>
         </executions>
 
-      </plugin> -->
+      </plugin>
     </plugins>
 
   </build>
