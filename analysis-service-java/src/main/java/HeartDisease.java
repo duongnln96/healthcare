@@ -1,3 +1,5 @@
+// import java.util.Properties;
+
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
@@ -5,6 +7,8 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 
 import processor.Processor;
+
+// import processor.Processor;
 
 public class HeartDisease {
 	public static void main(String[] args) {

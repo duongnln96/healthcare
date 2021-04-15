@@ -7,6 +7,9 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
+import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.common.io.ClassPathResource;
 
 public class Processor {
     public static String HEART_DISEASE_RAW_TOPIC = "heart-disease-raw";
@@ -23,7 +26,7 @@ public class Processor {
 		return props;
 	}
 
-	public static Topology createTopology() {
+	public static Topology createTopology() throws Exception {
 		final StreamsBuilder builder = new StreamsBuilder();
 		KStream<String, String> inputEvents = builder.stream(HEART_DISEASE_RAW_TOPIC);
 		
@@ -31,6 +34,15 @@ public class Processor {
             System.out.println("key: " + key);
             System.out.println("value: " + value);
         });
+
+		// ########################################################
+		// Step 1: Load Keras Model using DeepLearning4J API
+		// ########################################################
+		String simpleMlp = new ClassPathResource("generatedmodels/best_trained_model.h5").getFile().getPath();
+		System.out.println(simpleMlp.toString());
+
+		MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
+		System.out.println(model.toString());
 
 		return builder.build();
 	}  
