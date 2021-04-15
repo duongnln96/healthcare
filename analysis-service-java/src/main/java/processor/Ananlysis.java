@@ -11,7 +11,7 @@ import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.common.io.ClassPathResource;
 
-public class Processor {
+public class Ananlysis {
     public static String HEART_DISEASE_RAW_TOPIC = "heart-disease-raw";
     // public void startApplication() {
         
@@ -26,7 +26,7 @@ public class Processor {
 		return props;
 	}
 
-	public static Topology createTopology() throws Exception {
+	public static Topology createTopology() {
 		final StreamsBuilder builder = new StreamsBuilder();
 		KStream<String, String> inputEvents = builder.stream(HEART_DISEASE_RAW_TOPIC);
 		
@@ -35,6 +35,10 @@ public class Processor {
             System.out.println("value: " + value);
         });
 
+		return builder.build();
+	}
+	
+	public void loadModel() throws Exception {
 		// ########################################################
 		// Step 1: Load Keras Model using DeepLearning4J API
 		// ########################################################
@@ -43,7 +47,5 @@ public class Processor {
 
 		MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
 		System.out.println(model.toString());
-
-		return builder.build();
-	}  
+	}
 }

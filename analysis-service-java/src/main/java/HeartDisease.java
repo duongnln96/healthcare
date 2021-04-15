@@ -1,20 +1,16 @@
-// import java.util.Properties;
-
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 
-import processor.Processor;
-
-// import processor.Processor;
+import processor.Ananlysis;
 
 public class HeartDisease {
 	public static void main(String[] args) {
-		Properties props = Processor.createProperties();
+		Properties props = Ananlysis.createProperties();
 
-		final Topology topology = Processor.createTopology();
+		final Topology topology = Ananlysis.createTopology();
 		final KafkaStreams streams = new KafkaStreams(topology, props);
 		final CountDownLatch latch = new CountDownLatch(1);
 
