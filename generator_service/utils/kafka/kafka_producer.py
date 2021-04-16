@@ -23,7 +23,8 @@ class SimpleKafkaProducer:
         print("Send to topic: {}".format(record_metadata.topic))
         print("Send to partition: {}".format(record_metadata.partition))
         print("Send to offset: {}".format(record_metadata.offset))
-
+        print("{}".format(record_metadata))
+        
     def _on_send_error(self, excp):
         print("Error while publis message to Kafka", exc_info=excp)
 
