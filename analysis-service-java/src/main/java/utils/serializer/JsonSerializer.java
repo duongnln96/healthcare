@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.apache.kafka.common.serialization.Serializer;
 
@@ -13,9 +12,7 @@ public class JsonSerializer<T> implements Serializer<T> {
     private Gson gson;
 
     public JsonSerializer() {
-        GsonBuilder builder = new GsonBuilder();
-        // builder.registerTypeAdapter(FixedSizePriorityQueue.class, new FixedSizePriorityQueueAdapter().nullSafe());
-        gson = builder.create();
+        gson = new Gson();
     }
 
     @Override

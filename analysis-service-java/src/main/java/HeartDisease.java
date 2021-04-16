@@ -3,14 +3,17 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 
 import processor.Ananlysis;
 
 public class HeartDisease {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Properties props = Ananlysis.createProperties();
 
-		final Topology topology = Ananlysis.createTopology();
+		MultiLayerNetwork model = Ananlysis.loadModel();
+
+		final Topology topology = Ananlysis.createTopology(model);
 		final KafkaStreams streams = new KafkaStreams(topology, props);
 		final CountDownLatch latch = new CountDownLatch(1);
 

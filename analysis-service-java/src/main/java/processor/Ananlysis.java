@@ -1,6 +1,5 @@
 package processor;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -15,7 +14,9 @@ import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.common.io.ClassPathResource;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
+
+import models.HeartDiseaseModel;
+import utils.serde.StreamsSerdes;
 
 public class Ananlysis {
     public static String HEART_DISEASE_RAW_TOPIC = "heart-disease-raw";
@@ -24,7 +25,7 @@ public class Ananlysis {
 	private static INDArray output = null;
 
 	private static Serde<String> keySerde = Serdes.String();
-	private static Serde<String> valSerde = Serdes.String();
+	private static Serde<HeartDiseaseModel> HeartDiseaseSerde = StreamsSerdes.HeartDiseaseSerde();
 
 	public static Properties createProperties() {
 		Properties props = new Properties();
@@ -34,37 +35,29 @@ public class Ananlysis {
 		return props;
 	}
 
-	public static Topology createTopology() {
+	public static Topology createTopology(MultiLayerNetwork model) {
 		final StreamsBuilder builder = new StreamsBuilder();
-		KStream<String, String> inputEvents = builder.stream(HEART_DISEASE_RAW_TOPIC, Consumed.with(keySerde, valSerde));
+		KStream<String, HeartDiseaseModel> inputEvents = builder.stream(HEART_DISEASE_RAW_TOPIC, 
+																		Consumed.with(keySerde, HeartDiseaseSerde))
+				.mapValues(hd -> HeartDiseaseModel.builder(hd).converToINDArray().build());
+
+		// inputEvents.print(Printed.<String, HeartDiseaseModel>toSysOut().withLabel("HeartDiseaseModel"));
 		
         inputEvents.foreach((key, value) -> {
-            System.out.println("key: " + key);
-            System.out.println("value: " + value);
+			// Apply the analytic model:
+			output = model.output(value.getVectorINDArray());
+			prediction = output.toString();
+		
+			System.out.println("Prediction => " + prediction);
         });
 
 		return builder.build();
 	}
 	
-	public MultiLayerNetwork loadModel() throws Exception {
-		// ########################################################
-		// Step 1: Load Keras Model using DeepLearning4J API
-		// ########################################################
+	public static MultiLayerNetwork loadModel() throws Exception {
 		String simpleMlp = new ClassPathResource("generatedmodels/trained_model_wo_normalize.h5").getFile().getPath();
-		System.out.println(simpleMlp.toString());
 
 		MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
-
-		float[] vectorFloat = new float[]{65, 1, 4, 155, 0, 154, 0};
-        INDArray rowVector = Nd4j.create(vectorFloat, 1, 7);
-        System.out.println("rowVector:              " + rowVector);
-        System.out.println("rowVector.shape():      " + Arrays.toString(rowVector.shape()));
-
-		// Apply the analytic model:
-		output = model.output(rowVector);
-		prediction = output.toString();
-		
-		System.out.println("Prediction => " + prediction);
 
 		return model;
 	}
