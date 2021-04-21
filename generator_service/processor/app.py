@@ -1,6 +1,6 @@
-import csv
-import json
 import time
+import pandas as pd
+from pandas.io.pytables import SeriesFixed
 
 from utils import (
     KafkaConfig,
@@ -36,7 +36,7 @@ class Application:
                             'cholesterol', 'fasting_blood_sugar', 'rest_ecg', 
                             'max_heart_rate_achieved', 'exercise_induced_angina', 
                             'st_depression', 'st_slope')
-        self._csv_reader = None
+        self._data_table = None
         self._sampling_rate = config.sampling_rate
 
     def _create_topic(self, partition: int, relication: int):
@@ -45,13 +45,13 @@ class Application:
     def _send(self, message):
         self._kafka_app.kafka_producer.send(self._topic, message)
 
-    def _read_data(self):
-        csvfile = open(self._data_path, 'r')
-        self._csv_reader = csv.DictReader(csvfile, self._fieldnames)
+    def _read_data_pandas(self):
+        df = pd.read_csv(self._data_path, usecols=self._fieldnames)
+        self._data_table = df.to_dict(orient='records')
 
     def start(self):
-        self._read_data()
+        self._read_data_pandas()
         self._create_topic(partition=1, relication=1)
-        for row in self._csv_reader:
+        for row in self._data_table:
             self._send(row)
             time.sleep(self._sampling_rate)

@@ -1,1 +1,4 @@
-csv
+kafka-python
+pyyaml
+envyaml
+pandas

@@ -1,47 +1,31 @@
 version: "3.8"
 services:
   zookeeper:
-    image: wurstmeister/zookeeper
-    # networks:
-    #   - broker
+    image: zookeeper:3.4
 
   kafka:
     image: wurstmeister/kafka
-    environment:
-      # remember to change this host address to the actual network
-      KAFKA_ADVERTISED_HOST_NAME: 172.28.0.10
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+    - zookeeper
     ports:
-      - "9092:9092"
-    networks:
-      broker:
-        ipv4_address: 172.28.0.10
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
-      interval: 10s
-      timeout: 10s
-      retries: 10
+    - "29092:29092"   
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
 
   kafdrop:
     image: obsidiandynamics/kafdrop
     ports:
-      - "9000:9000"
+    - "9000:9000"
     environment:
-      KAFKA_BROKERCONNECT: kafka:9092
+      KAFKA_BROKERCONNECT: PLAINTEXT://kafka:9092
       JVM_OPTS: -Xms32M -Xmx64M
       SERVER_SERVLET_CONTEXTPATH: /
-    networks:
-      - broker
     depends_on:
-      kafka:
-        condition: service_healthy
-
-networks:
-  broker:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.28.0.0/16
-
+    - kafka
