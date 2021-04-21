@@ -4,35 +4,40 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.Topology;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import processor.Ananlysis;
 
 public class HeartDisease {
+
+	private static final Logger LOG = LoggerFactory.getLogger(HeartDisease.class);
 	public static void main(String[] args) throws Exception {
 		Properties props = Ananlysis.createProperties();
 
 		MultiLayerNetwork model = Ananlysis.loadModel();
 
 		final Topology topology = Ananlysis.createTopology(model);
-		final KafkaStreams streams = new KafkaStreams(topology, props);
-		final CountDownLatch latch = new CountDownLatch(1);
+		final KafkaStreams kstreams = new KafkaStreams(topology, props);
+		final CountDownLatch stopSignal = new CountDownLatch(1);
 
 		Runtime.getRuntime().addShutdownHook(new Thread("kafka-streams-shutdown-hook") {
 			@Override
 			public void run() {
-				System.out.println("Interrupt service ... ");
-				streams.close();
-				latch.countDown();
-				System.exit(1);
+				LOG.info("Shutting down the Kafka Streams Application now");
+				kstreams.close();
+				stopSignal.countDown();
 			}
 		});
 
 		try {
-			streams.start();
-			latch.await();
+			kstreams.start();
+			stopSignal.await();
 		} catch (Throwable e) {
-			System.exit(1);
+			LOG.info("Exception: {}", e);
 		}
+		
+		LOG.info("All done now, good-bye");
 		System.exit(0);
 	}
 }

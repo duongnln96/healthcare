@@ -10,15 +10,20 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.common.io.ClassPathResource;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import models.HeartDiseaseModel;
 import utils.serde.StreamsSerdes;
 
 public class Ananlysis {
+	private static final Logger LOG = LoggerFactory.getLogger(Ananlysis.class);
+
     public static String HEART_DISEASE_RAW_TOPIC = "heart-disease-raw";
 
 	private static String prediction = "unknown";
@@ -29,9 +34,16 @@ public class Ananlysis {
 
 	public static Properties createProperties() {
 		Properties props = new Properties();
-		props.put(StreamsConfig.APPLICATION_ID_CONFIG, "heart-disease-prediction");
-		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
+		props.put(StreamsConfig.APPLICATION_ID_CONFIG, "heart-disease-app-id");
+		props.put(StreamsConfig.CLIENT_ID_CONFIG, "heart-disease-client-id");
+		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		props.put(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "DEBUG");
+		props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, 
+								WallclockTimestampExtractor.class);
+								
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, "heart-disease-group-id");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
 		return props;
 	}
 
@@ -48,7 +60,7 @@ public class Ananlysis {
 			output = model.output(value.getVectorINDArray());
 			prediction = output.toString();
 		
-			System.out.println("Prediction => " + prediction);
+			LOG.info("Prediction => " + prediction);
         });
 
 		return builder.build();
