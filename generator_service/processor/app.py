@@ -12,6 +12,11 @@ from .get_config import (
     AppConfig,
 )
 
+from .heart_disease_model import (
+    HeartDiseaseModel,
+    HeartDiseaseDataGenerator,
+)
+
 class KafkaAppication:
     def __init__(self, config: KafkaConfig) -> None:
         self._kafa_connector = SimpleKafkaConnector(config)
@@ -27,6 +32,10 @@ class KafkaAppication:
 
 
 class Application:
+
+    DEFAULT_NUM_INTERATION = 100
+    DEFAULT_NUM_RECORD = 100
+
     def __init__(self, config: AppConfig) -> None:
         self._kafka_app = KafkaAppication(config.kafka_config)
         self._topic = config.topic_name
@@ -49,9 +58,13 @@ class Application:
         df = pd.read_csv(self._data_path, usecols=self._fieldnames)
         self._data_table = df.to_dict(orient='records')
 
-    def start(self):
-        self._read_data_pandas()
-        self._create_topic(partition=1, relication=1)
-        for row in self._data_table:
-            self._send(row)
+    def _generate_heart_disease(self, num_record=DEFAULT_NUM_RECORD, num_iter=DEFAULT_NUM_INTERATION):
+        for _ in range(num_iter):
+            data = HeartDiseaseDataGenerator().generate(num_record)
+            for elem in data:
+                self._send(elem)
             time.sleep(self._sampling_rate)
+
+    def start(self):
+        self._create_topic(partition=1, relication=1)
+        self._generate_heart_disease()
