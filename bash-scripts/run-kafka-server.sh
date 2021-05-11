@@ -12,7 +12,7 @@ export KAFKA_OPTS="-javaagent:$KAFKA_DIR/prometheus/jmx_prometheus_javaagent-0.6
 export JMX_PORT=7081
 
 if [[ ${opt} == "start" ]]; then
-    $KAFKA_DIR/bin/kafka-server-$opt.sh ./server-config.properties
+    $KAFKA_DIR/bin/kafka-server-$opt.sh ./config/kafka-server-config.properties
 elif [[ ${opt} == "stop" ]]; then
     $KAFKA_DIR/bin/kafka-server-$opt.sh
 fi
