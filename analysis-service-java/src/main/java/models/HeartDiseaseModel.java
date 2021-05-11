@@ -1,5 +1,6 @@
 package models;
 
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -11,7 +12,7 @@ public class HeartDiseaseModel {
     private int fasting_blood_sugar;
     private int max_heart_rate_achieved;
     private int exercise_induced_angina;
-    private INDArray vectorIND; 
+    private Double predictResult;
 
     public HeartDiseaseModel(Builder builder) {
         age = builder.age;
@@ -21,11 +22,7 @@ public class HeartDiseaseModel {
         fasting_blood_sugar = builder.fasting_blood_sugar;
         max_heart_rate_achieved = builder.max_heart_rate_achieved;
         exercise_induced_angina = builder.exercise_induced_angina;
-        vectorIND = builder.vectorIND;
-    }
-
-    public INDArray getVectorINDArray() {
-        return this.vectorIND;
+        predictResult = builder.predictResult.getDouble(0);
     }
 
     public static Builder builder(HeartDiseaseModel cp) {
@@ -44,16 +41,16 @@ public class HeartDiseaseModel {
 
     @Override
     public String toString() {
-        return "HeartDiseaseModel {" +
-                "age=" + age +
+        return "HeartDisease {" +
+                " age=" + age +
                 ", sex=" + sex +
                 ", chest_pain_type=" + chest_pain_type +
                 ", resting_blood_pressure=" + resting_blood_pressure +
                 ", fasting_blood_sugar=" + fasting_blood_sugar +
                 ", max_heart_rate_achieved=" + max_heart_rate_achieved +
                 ", exercise_induced_angina=" + exercise_induced_angina +
-                ", vectorIND=" + vectorIND +
-                "}";
+                ", predict_result=" + predictResult +
+                " }";
     }
 
     public static final class Builder {
@@ -64,22 +61,25 @@ public class HeartDiseaseModel {
         private int fasting_blood_sugar;
         private int max_heart_rate_achieved;
         private int exercise_induced_angina;
-        private INDArray vectorIND;
 
-        private int vectorXDim = 1;
-        private int vectorYDim = 7;
+        private INDArray predictResult;
+
+        private final int vectorXDim = 1;
+        private final int vectorYDim = 7;
 
         private Builder() {
         }
 
-        public Builder converToINDArray(){
+        public Builder predict(MultiLayerNetwork model){
             float[] vectorInt = new float[]{this.age, this.sex, this.chest_pain_type, 
                                         this.resting_blood_pressure, this.fasting_blood_sugar, 
                                         this.max_heart_rate_achieved, this.exercise_induced_angina};
 
-            this.vectorIND = Nd4j.create(vectorInt, this.vectorXDim, this.vectorYDim);
+            INDArray vectorIND = Nd4j.create(vectorInt, this.vectorXDim, this.vectorYDim);
+            this.predictResult = model.output(vectorIND);
+
             return this;
-        }        
+        }
 
         public HeartDiseaseModel build() {
             return new HeartDiseaseModel(this);
