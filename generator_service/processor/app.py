@@ -33,8 +33,8 @@ class KafkaAppication:
 
 class Application:
 
-    DEFAULT_NUM_INTERATION = 100
-    DEFAULT_NUM_RECORD = 100
+    DEFAULT_NUM_INTERATION = 500
+    DEFAULT_NUM_RECORD = 1000
 
     def __init__(self, config: AppConfig) -> None:
         self._kafka_app = KafkaAppication(config.kafka_config)

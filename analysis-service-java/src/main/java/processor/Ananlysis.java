@@ -10,24 +10,19 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Printed;
+import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.common.io.ClassPathResource;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import models.HeartDiseaseModel;
 import utils.serde.StreamsSerdes;
 
 public class Ananlysis {
-	private static final Logger LOG = LoggerFactory.getLogger(Ananlysis.class);
-
-    public static String HEART_DISEASE_RAW_TOPIC = "heart-disease-raw";
-
-	private static String prediction = "unknown";
-	private static INDArray output = null;
+    public static final String HEART_DISEASE_IN_TOPIC = "heart-disease-raw";
+	public static final String HEART_DISEASE_OUT_TOPIC = "heart-disease-out";
 
 	private static Serde<String> keySerde = Serdes.String();
 	private static Serde<HeartDiseaseModel> HeartDiseaseSerde = StreamsSerdes.HeartDiseaseSerde();
@@ -49,19 +44,12 @@ public class Ananlysis {
 
 	public static Topology createTopology(MultiLayerNetwork model) {
 		final StreamsBuilder builder = new StreamsBuilder();
-		KStream<String, HeartDiseaseModel> inputEvents = builder.stream(HEART_DISEASE_RAW_TOPIC, 
+		KStream<String, HeartDiseaseModel> heartdiseaseStream = builder.stream(HEART_DISEASE_IN_TOPIC, 
 																		Consumed.with(keySerde, HeartDiseaseSerde))
-				.mapValues(hd -> HeartDiseaseModel.builder(hd).converToINDArray().build());
+				.mapValues(hd -> HeartDiseaseModel.builder(hd).predict(model).build());
 
-		// inputEvents.print(Printed.<String, HeartDiseaseModel>toSysOut().withLabel("HeartDiseaseModel"));
-		
-        inputEvents.foreach((key, value) -> {
-			// Apply the analytic model:
-			output = model.output(value.getVectorINDArray());
-			prediction = output.toString();
-		
-			LOG.info("Prediction => " + prediction);
-        });
+		heartdiseaseStream.print(Printed.<String, HeartDiseaseModel>toSysOut().withLabel("HeartDiseasePredict"));
+		heartdiseaseStream.to(HEART_DISEASE_OUT_TOPIC, Produced.with(keySerde, HeartDiseaseSerde));
 
 		return builder.build();
 	}

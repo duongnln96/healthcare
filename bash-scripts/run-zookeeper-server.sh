@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 KAFKA_DIR=~/kafka_2.12-2.7.0
 
 opt=$1

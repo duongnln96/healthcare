@@ -36,8 +36,5 @@ public class HeartDisease {
 		} catch (Throwable e) {
 			LOG.info("Exception: {}", e);
 		}
-		
-		LOG.info("All done now, good-bye");
-		System.exit(0);
 	}
 }

@@ -1,0 +1,29 @@
+global:
+  # How frequently to scrape targets by default.
+  # Default 15s
+  scrape_interval: 30s
+  # How frequently to evaluate rules.
+  # Default 15s
+  evaluation_interval: 15s
+  # How long until a scrape request times out.
+  # Default to 10s.
+  # Required because cp-demo is using cpu throttling, so let's leave enough time to fetch the metrics in particular for the first time as it needs to compile all rexps
+  scrape_timeout: 20s
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['host.docker.internal:1110']
+        labels:
+          env: "dev"
+
+  - job_name: 'kafka-streams-applications'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:1111']
+        labels:
+          env: "dev"
+  
