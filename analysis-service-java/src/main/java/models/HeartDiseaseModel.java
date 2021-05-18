@@ -41,7 +41,7 @@ public class HeartDiseaseModel {
 
     @Override
     public String toString() {
-        return "HeartDisease {" +
+        return "HeartDisease [{" +
                 " age=" + age +
                 ", sex=" + sex +
                 ", chest_pain_type=" + chest_pain_type +
@@ -50,7 +50,7 @@ public class HeartDiseaseModel {
                 ", max_heart_rate_achieved=" + max_heart_rate_achieved +
                 ", exercise_induced_angina=" + exercise_induced_angina +
                 ", predict_result=" + predictResult +
-                " }";
+                " }]";
     }
 
     public static final class Builder {

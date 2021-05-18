@@ -1,7 +1,7 @@
 # **HealthCare BigData**
 
 ## **Model**
-[Colab Notebook build model](https://colab.research.google.com/drive/1C6rWrFjDEUCOjbubravx6ww8a9wqvd8t?usp=sharing)
+[ColabNotebook](https://colab.research.google.com/drive/1C6rWrFjDEUCOjbubravx6ww8a9wqvd8t?usp=sharing)
 
 ## **Evaluate Performence**
 
@@ -10,41 +10,53 @@
 #### **Setup**
 
 ```console
-$ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test-rep-one --partitions 6 --replication-factor 1
+$ ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test1 --partitions 1 --replication-factor 1
 
-$ bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test --partitions 6 --replication-factor 3
+$ ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test2 --partitions 2 --replication-factor 1
+
+$ ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test3 --partitions 3 --replication-factor 1
 ```
 
-#### **1. Single thread, no replication**
+#### **1. Single thread, async, no replication**
 
 ```console
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance --topic test7 --throughput -1 --num-records 50000000 --record-size 100 --producer-props acks= bootstrap.servers=localhost:9092 buffer.memory=67108864 batch.size=8196
+./bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance \
+--topic test1 \
+--throughput -1 \
+--num-records 50000000 \
+--record-size 200 \
+--producer-props \
+bootstrap.servers=localhost:9092 \
+acks=-1 \
+buffer.memory=67108864 batch.size=8196
 ```
 
-#### **2. Single-thread, async 3x replication**
+#### **2. Single-thread, async, no replication**
 
 ```console
-bin/kafktopics.sh --zookeeper localhost:2181 --create --topic test --partitions 6 --replication-factor 3
-
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance test6 50000000 100 -1 acks=1 bootstrap.servers=esv4-hcl198.grid.linkedin.com:9092 buffer.memory=67108864 batch.size=8196
+./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
+--topic test33 \
+--throughput -1 \
+--num-records 50000000 \
+--record-size 200 \
+--producer-props \
+bootstrap.servers=localhost:9092 \
+acks=1 \
+buffer.memory=67108864 batch.size=8196
 ```
 
-#### **3. Single-thread, sync 3x replication**
+#### **3. Throughput Versus Stored Data**
 
 ```console
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance test 50000000 100 -1 acks=-1 bootstrap.servers=esv4-hcl198.grid.linkedin.com:9092 buffer.memory=67108864 batch.size=64000
-```
-
-#### **4. Three Producers, 3x async replication**
-
-```console
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance test 50000000 100 -1 acks=1 bootstrap.servers=esv4-hcl198.grid.linkedin.com:9092 buffer.memory=67108864 batch.size=8196
-```
-
-#### **5. Throughput Versus Stored Data**
-
-```console
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance test 50000000000 100 -1 acks=1 bootstrap.servers=esv4-hcl198.grid.linkedin.com:9092 buffer.memory=67108864 batch.size=8196
+./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
+--topic test \
+--throughput -1 \
+--num-records 50000000 \
+--record-size 200 \
+--producer-props \
+bootstrap.servers=localhost:9092 \
+acks=1 \
+buffer.memory=67108864 batch.size=8196
 ```
 
 #### **6. Effect of message size**
@@ -54,7 +66,15 @@ for i in 10 100 1000 10000 100000;
 do
 echo ""
 echo $i
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance test $((1000*1024*1024/$i)) $i -1 acks=1 bootstrap.servers=esv4-hcl198.grid.linkedin.com:9092 buffer.memory=67108864 batch.size=128000
+./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
+--topic test \
+--throughput -1 \
+--num-records $((1000*1024*1024/$i)) \
+--record-size $i \
+--producer-props \
+bootstrap.servers=localhost:9092 \
+acks=1 \
+buffer.memory=67108864 batch.size=128000
 done;
 ```
 
@@ -63,7 +83,10 @@ done;
 #### **1. Consumer throughput**
 
 ```console
-bin/kafka-consumer-perf-test.sh --zookeeper localhost:2181 --messages 50000000 --topic test --threads 1
+./bin/kafka-consumer-perf-test.sh ----bootstrap-server localhost:9092 \
+--messages 50000000 \
+--topic test \
+--threads 1
 ```
 
 #### **2. Three Consumers**
@@ -71,22 +94,32 @@ bin/kafka-consumer-perf-test.sh --zookeeper localhost:2181 --messages 50000000 -
 On three servers, run:
 
 ```console
-bin/kafka-consumer-perf-test.sh --zookeeper localhost:2181 --messages 50000000 --topic test --threads 1
+./bin/kafka-consumer-perf-test.sh ----bootstrap-server localhost:9092 \
+--messages 50000000 \
+--topic test \
+--threads 1
 ```
 
 #### **3. End-to-end Latency**
 
 ```console
-bin/kafka-run-class.sh kafka.tools.TestEndToEndLatency localhost:9092 localhost:2181 test 5000
+./bin/kafka-run-class.sh kafka.tools.TestEndToEndLatency localhost:9092 localhost:2181 test 5000
 ```
 
 #### **4. Producer and consumer**
 
 ```console
-bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance test 50000000 100 -1 acks=1 bootstrap.servers=localhost:9092 buffer.memory=67108864 batch.size=8196
+./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
+--topic test \
+--throughput -1 \
+--num-records 50000000 \
+--record-size 200 \
+--producer-props \
+bootstrap.servers=localhost:9092 \
+acks=1 \
+buffer.memory=67108864 batch.size=8196
 
-
-bin/kafka-consumer-perf-test.sh --zookeeper localhost:2181 --messages 50000000 --topic test --threads 1
+./bin/kafka-consumer-perf-test.sh --zookeeper localhost:2181 --messages 50000000 --topic test --threads 1
 ```
 
 
