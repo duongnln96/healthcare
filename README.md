@@ -23,43 +23,14 @@ $ ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic test3 --part
 ./bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance \
 --topic test1 \
 --throughput -1 \
---num-records 50000000 \
---record-size 200 \
---producer-props \
-bootstrap.servers=localhost:9092 \
-acks=-1 \
-buffer.memory=67108864 batch.size=8196
-```
-
-#### **2. Single-thread, async, no replication**
-
-```console
-./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
---topic test33 \
---throughput -1 \
---num-records 50000000 \
---record-size 200 \
+--num-records 5000000 \
+--record-size 66560 \
 --producer-props \
 bootstrap.servers=localhost:9092 \
 acks=1 \
-buffer.memory=67108864 batch.size=8196
 ```
 
-#### **3. Throughput Versus Stored Data**
-
-```console
-./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
---topic test \
---throughput -1 \
---num-records 50000000 \
---record-size 200 \
---producer-props \
-bootstrap.servers=localhost:9092 \
-acks=1 \
-buffer.memory=67108864 batch.size=8196
-```
-
-#### **6. Effect of message size**
+#### **2. Effect of message size**
 
 ```bash
 for i in 10 100 1000 10000 100000;
