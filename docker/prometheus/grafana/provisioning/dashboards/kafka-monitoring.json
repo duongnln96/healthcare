@@ -12,12 +12,12 @@
       }
     ]
   },
-  "description": "Kafka resource usage and throughput",
+  "description": "Kafka Resource Usage And Throughput",
   "editable": true,
   "gnetId": 721,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1620993938117,
+  "iteration": 1621531424250,
   "links": [],
   "panels": [
     {
@@ -1996,7 +1996,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(kafka_streams_stream_thread_metrics_process_rate{app=\"kafka-streams-applications\"})",
+          "expr": "sum(rate(kafka_streams_stream_thread_metrics_process_rate{job=\"kafka-streams-applications\",env=\"$env\"}[20m]))",
           "interval": "",
           "legendFormat": "Process Rate",
           "refId": "A"
@@ -2092,14 +2092,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "max(kafka_streams_stream_processor_node_metrics_record_e2e_latency_max{job=\"kafka-streams-applications\",instance=\"host.docker.internal:1111\",processor_node_id=\"KSTREAM-SOURCE-0000000000\",thread_id=\"heart-disease-client-id-StreamThread-1\",env=\"$env\"})",
+          "expr": "max(kafka_streams_stream_processor_node_metrics_record_e2e_latency_max{job=\"kafka-streams-applications\",processor_node_id=~\"KSTREAM.*\",thread_id=~\"heart-disease-client-id.*\",env=\"$env\"})",
           "interval": "",
           "legendFormat": "Max Record E2E Latency",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "avg(kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{job=\"kafka-streams-applications\",instance=\"host.docker.internal:1111\",processor_node_id=\"KSTREAM-SOURCE-0000000000\",thread_id=\"heart-disease-client-id-StreamThread-1\",env=\"$env\"})",
+          "expr": "avg(kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{job=\"kafka-streams-applications\",processor_node_id=~\"KSTREAM.*\",thread_id=~\"heart-disease-client-id.*\",env=\"$env\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Avg Record E2E Latency",
@@ -2107,7 +2107,7 @@
         },
         {
           "exemplar": true,
-          "expr": "min(kafka_streams_stream_processor_node_metrics_record_e2e_latency_min{job=\"kafka-streams-applications\",instance=\"host.docker.internal:1111\",processor_node_id=\"KSTREAM-SOURCE-0000000000\",thread_id=\"heart-disease-client-id-StreamThread-1\",env=\"$env\"})",
+          "expr": "min(kafka_streams_stream_processor_node_metrics_record_e2e_latency_min{job=\"kafka-streams-applications\",processor_node_id=~\"KSTREAM.*\",thread_id=~\"heart-disease-client-id.*\",env=\"$env\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Min Record E2E Latency",
@@ -4537,7 +4537,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "All"
           ],
@@ -4572,7 +4572,7 @@
       {
         "allValue": "",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "All"
           ],
@@ -4607,7 +4607,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "All"
           ],
@@ -4673,5 +4673,5 @@
   "timezone": "browser",
   "title": "Kafka Monitoring",
   "uid": "PYRR_sjMz",
-  "version": 12
+  "version": 4
 }
