@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from kafka.admin import (
     KafkaAdminClient, 
@@ -24,6 +25,6 @@ class SimpleKafkaConnector:
             topic_list = []
             topic_list.append(NewTopic(topic, partitions, relicas))
             self._connector.create_topics(new_topics=topic_list, timeout_ms=self._timeout)
-            print("Create new topics: {} in the cluster".format(topic))
+            logging.warning("Create new topics: {} in the cluster".format(topic))
         except Exception as ex:
-            print("Error while creating the kafka topic: {}".format(ex))
+            logging.exception("Error while creating the kafka topic: {}".format(ex))
