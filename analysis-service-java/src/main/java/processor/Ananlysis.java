@@ -55,7 +55,7 @@ public class Ananlysis {
 	}
 	
 	public static MultiLayerNetwork loadModel() throws Exception {
-		String simpleMlp = new ClassPathResource("generatedmodels/trained_model_wo_normalize.h5").getFile().getPath();
+		String simpleMlp = new ClassPathResource("generatedmodels/best_trained_model.h5").getFile().getPath();
 
 		MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
 
