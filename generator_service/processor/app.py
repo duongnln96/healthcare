@@ -18,6 +18,9 @@ from .heart_disease_model import (
     HeartDiseaseDataGenerator,
 )
 
+DEFAULT_NUM_INTERATION = 10
+DEFAULT_NUM_RECORD = 1000
+
 class KafkaAppication:
     def __init__(self, config: KafkaConfig) -> None:
         self._kafa_connector = SimpleKafkaConnector(config)
@@ -38,15 +41,13 @@ class KafkaAppication:
 
 
 class ProduceApplication:
-
-    DEFAULT_NUM_INTERATION = 10
-    DEFAULT_NUM_RECORD = 1000
+    CLASS_NAME = __name__
 
     def __init__(self, config: AppConfig) -> None:
         self._kproducer = KafkaAppication(config.kafka_config).kafka_producer
         self._topic = config.topic_in
         self._sampling_rate = config.sampling_rate
-        self._log = logging.get_logger()
+        self._log = logging.get_logger(self.CLASS_NAME)
 
     def _send(self, message):
         self._kproducer.send(self._topic, message)
@@ -68,10 +69,11 @@ class ProduceApplication:
 
 
 class ComsumeApplication:
+    CLASS_NAME = __name__
     def __init__(self, config: AppConfig) -> None:
         self._kcomsumer = KafkaAppication(config.kafka_config).kafka_consumer
         self._topic = config.topic_out
-        self._log = logging.get_logger()
+        self._log = logging.get_logger(self.CLASS_NAME)
         self._latencies = []
 
     def _consume_messages(self):
@@ -81,19 +83,21 @@ class ComsumeApplication:
                 if msg is None:
                     continue
                 else:
-                    # logging.info(self._log, "{}".format(msg))
                     latency = (datetime.now().timestamp()*1000) - msg.timestamp
-                    self._latencies .append(latency)
+                    self._latencies.append(latency)
         except KeyboardInterrupt:
             pass
         finally:
             self._consume_stop()
-            if len(self._latencies) != 0:
-                logging.info(self._log, "{} messages consumed".format(len(self._latencies)))
-                logging.info(self._log, "mean latency: {}ms".format(statistics .mean(self._latencies)))
-                logging.info(self._log, "max latency: {}ms".format(max(self._latencies)))
-            else:
-                logging.err(self._log, "Cannot get any messages")
+            self._report()
+
+    def _report(self):
+        if len(self._latencies) != 0:
+            logging.info(self._log, "{} messages consumed".format(len(self._latencies)))
+            logging.info(self._log, "mean latency: {}ms".format(statistics.mean(self._latencies)))
+            logging.info(self._log, "max latency: {}ms".format(max(self._latencies)))
+        else:
+            logging.err(self._log, "Cannot get any messages")
 
     def _consume_stop(self):
         self._kcomsumer.stop_consume()

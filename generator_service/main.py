@@ -23,7 +23,7 @@ def argument_parser():
 
 def main() -> None:
     args = argument_parser()
-    log = logging.get_logger()
+    log = logging.get_logger(__name__)
 
     appConfig = processor.GetAppConfig().get_app_config()
     logging.info(log, "App Config: {}".format(appConfig))

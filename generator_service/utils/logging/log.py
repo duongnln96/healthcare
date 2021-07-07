@@ -1,8 +1,8 @@
 import logging
 
-def get_logger():
+def get_logger(module: str):
     logging.basicConfig()
-    logger = logging.getLogger()
+    logger = logging.getLogger(module)
     logger.setLevel(logging.INFO)
     return logger
 
