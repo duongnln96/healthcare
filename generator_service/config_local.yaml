@@ -2,7 +2,7 @@ kafka_management:
   bootstrap_servers: "localhost:9092"
   partitions: 1
   timeout: 10000
-  topic: "heart-disease-raw"
+  topic_in: "heart-disease-raw"
+  topic_out: "heart-disease-out"
 
-data_path: "./data/heart_modified.csv"
 sampling_rate: 2

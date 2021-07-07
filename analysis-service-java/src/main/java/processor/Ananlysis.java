@@ -33,9 +33,9 @@ public class Ananlysis {
 		props.put(StreamsConfig.CLIENT_ID_CONFIG, "heart-disease-client-id");
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		props.put(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "DEBUG");
-		props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, 
-								WallclockTimestampExtractor.class);
-								
+		// props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, 
+		// 						WallclockTimestampExtractor.class);
+		// props.put(StreamsConfig.BUFFERED_RECORDS_PER_PARTITION_CONFIG, "1500");
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "heart-disease-group-id");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
