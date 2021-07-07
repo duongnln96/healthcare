@@ -5,3 +5,6 @@ from .kafka_connector import (
 from .kafka_producer import (
     SimpleKafkaProducer,
 )
+from .kafka_consumer import (
+    SimpleKafkaConsumer,
+)
