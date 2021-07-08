@@ -18,6 +18,7 @@ import org.nd4j.common.io.ClassPathResource;
 
 import models.HeartDiseaseModel;
 import utils.serde.StreamsSerdes;
+import utils.timestampextractor.RecordTimestampExtractor;
 
 public class Ananlysis {
     public static final String HEART_DISEASE_IN_TOPIC = "heart-disease-raw";
@@ -32,9 +33,9 @@ public class Ananlysis {
 		props.put(StreamsConfig.CLIENT_ID_CONFIG, "heart-disease-client-id");
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		props.put(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "DEBUG");
-		// props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
-		// 						WallclockTimestampExtractor.class);
+		props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, "1");
 		// props.put(StreamsConfig.BUFFERED_RECORDS_PER_PARTITION_CONFIG, "1500");
+		props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, RecordTimestampExtractor.class);
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "heart-disease-group-id");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
@@ -54,7 +55,7 @@ public class Ananlysis {
 	}
 
 	public static MultiLayerNetwork loadModel() throws Exception {
-		String simpleMlp = new ClassPathResource("generatedmodels/best_trained_model.h5").getFile().getPath();
+		String simpleMlp = new ClassPathResource("generatedmodels/best_trained_model_3.h5").getFile().getPath();
 
 		MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
 

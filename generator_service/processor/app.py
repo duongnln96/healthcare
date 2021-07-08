@@ -86,8 +86,6 @@ class ComsumeApplication:
                     latency = (datetime.now().timestamp()*1000) - msg.timestamp
                     self._latencies.append(latency)
         except KeyboardInterrupt:
-            pass
-        finally:
             self._consume_stop()
             self._report()
 
