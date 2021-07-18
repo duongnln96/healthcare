@@ -60,24 +60,7 @@ done;
 --threads 1
 ```
 
-#### **2. Three Consumers**
-
-On three servers, run:
-
-```console
-./bin/kafka-consumer-perf-test.sh ----bootstrap-server localhost:9092 \
---messages 50000000 \
---topic test \
---threads 1
-```
-
-#### **3. End-to-end Latency**
-
-```console
-./bin/kafka-run-class.sh kafka.tools.TestEndToEndLatency localhost:9092 localhost:2181 test 5000
-```
-
-#### **4. Producer and consumer**
+#### **2. Producer and consumer**
 
 ```console
 ./bin/kafka-run-class.sh org.apache.kafka.clients.tools.ProducerPerformance \
@@ -93,57 +76,12 @@ buffer.memory=67108864 batch.size=8196
 ./bin/kafka-consumer-perf-test.sh --zookeeper localhost:2181 --messages 50000000 --topic test --threads 1
 ```
 
+## **Ref**
 
-```console
-$ ./bin/kafka-run-class.sh org.apache.kafka.tools.ProducerPerformance --help
+[1. Deeplearning4jPractical](https://www.dubs.tech/guides/quickstart-with-dl4j/#defining-a-schema)
 
-usage: producer-performance [-h] --topic TOPIC --num-records NUM-RECORDS
-                            [--payload-delimiter PAYLOAD-DELIMITER] --throughput THROUGHPUT
-                            [--producer-props PROP-NAME=PROP-VALUE [PROP-NAME=PROP-VALUE ...]]
-                            [--producer.config CONFIG-FILE] [--print-metrics]
-                            [--transactional-id TRANSACTIONAL-ID]
-                            [--transaction-duration-ms TRANSACTION-DURATION]
-                            (--record-size RECORD-SIZE | --payload-file PAYLOAD-FILE)
+[2. ModelTraining](https://deeplearning4j.konduit.ai/datavec/overview)
 
-This tool is used to verify the producer performance.
+[3. Real-Time Remote Health Monitoring System Driven by 5G MEC-IoT](https://www.mdpi.com/2079-9292/9/11/1753)
 
-optional arguments:
-  -h, --help             show this help message and exit
-  --topic TOPIC          produce messages to this topic
-  --num-records NUM-RECORDS
-                         number of messages to produce
-  --payload-delimiter PAYLOAD-DELIMITER
-                         provides delimiter to be used  when  --payload-file is provided. Defaults
-                         to new line. Note that this  parameter  will be ignored if --payload-file
-                         is not provided. (default: \n)
-  --throughput THROUGHPUT
-                         throttle  maximum  message   throughput   to  *approximately*  THROUGHPUT
-                         messages/sec. Set this to -1 to disable throttling.
-  --producer-props PROP-NAME=PROP-VALUE [PROP-NAME=PROP-VALUE ...]
-                         kafka producer related  configuration  properties like bootstrap.servers,
-                         client.id etc. These configs  take  precedence  over  those passed via --
-                         producer.config.
-  --producer.config CONFIG-FILE
-                         producer config properties file.
-  --print-metrics        print out metrics at the end of the test. (default: false)
-  --transactional-id TRANSACTIONAL-ID
-                         The transactionalId to  use  if  transaction-duration-ms  is  > 0. Useful
-                         when  testing  the  performance  of  concurrent  transactions.  (default:
-                         performance-producer-default-transactional-id)
-  --transaction-duration-ms TRANSACTION-DURATION
-                         The max age of  each  transaction.  The  commitTransaction will be called
-                         after this time has elapsed. Transactions  are only enabled if this value
-                         is positive. (default: 0)
-
-  either --record-size or --payload-file must be specified but not both.
-
-  --record-size RECORD-SIZE
-                         message size in bytes.  Note  that  you  must  provide  exactly one of --
-                         record-size or --payload-file.
-  --payload-file PAYLOAD-FILE
-                         file to read  the  message  payloads  from.  This  works  only  for UTF-8
-                         encoded text files. Payloads will be  read  from  this file and a payload
-                         will be randomly  selected  when  sending  messages.  Note  that you must
-                         provide exactly one of --record-size or --payload-file.
-
-```
+[4. Benchmarking Apache Kafka](https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines)
