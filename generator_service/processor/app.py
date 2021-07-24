@@ -18,7 +18,7 @@ from .heart_disease_model import (
     HeartDiseaseDataGenerator,
 )
 
-DEFAULT_NUM_INTERATION = 10
+DEFAULT_NUM_INTERATION = 100
 DEFAULT_NUM_RECORD = 1000
 
 class KafkaAppication:
